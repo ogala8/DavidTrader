@@ -1,4 +1,0 @@
-include README.md
-include LICENSE
-include DavidTrader/*.html
-include WebDavidBot.bat
