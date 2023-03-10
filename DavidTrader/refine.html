@@ -1,0 +1,23 @@
+{% extends 'stratbase.html' %}
+
+{% block formu %}
+{% endblock %}
+{% block refine %}
+  <p> Please specify some parameters before continuing </p>
+    {% for ind in indics %}
+    <p>{{ ind.indicator }} parameters</p>
+    <br/><br/>
+    {% for par in ind.params_in %}
+    <label for="{{ ind.indicator }}.{{ par[0] }}">{{ ind.indicator }} {{ par[0] }}</label>
+    <input name="{{ ind.indicator }}.{{ par[0] }}" id="{{ ind.indicator }}.{{ par[0] }}" type="number" value="{{ par[1] }}">
+    <br/>
+    {% endfor %}
+    {% if ind.flag_refine %}
+    <p>Select output value for {{ ind.indicator }}</p>        
+    {% for paro in ind.params_out %}    
+    <input type="radio" name="{{ ind.indicator }}_out" id="{{ ind.indicator }}.{{ paro }}" value="{{ ind.indicator }}.{{ paro }}">
+    <label for="{{ ind.indicator }}.{{ paro }}">{{ paro }}</label><br>
+    {% endfor %}
+    {% endif %}
+    {% endfor %}
+{% endblock %}

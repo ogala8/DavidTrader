@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>David Trader</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            font-size: 18px;
+            color: #111;
+            padding: 0 0 1em 0;
+        }
+        .debut {
+            width: 80%;
+            margin: auto;
+            border: 5px solid black;
+        }
+        #player {
+		position: sticky;
+		top: 20px;
+		float: right;
+	}
+    </style>
+  </head>
+  <body>
+
+<h1 align="center">David Trader</h1>
+<br/><br/>
+<div class="debut">
+<form method="post" id="my-form">
+    <br/><br/><br/>
+    <label for="{{ openclose }}">Choose your {{ openclose }} position logic:</label>
+    <br/><br/>
+    <label for="{{ longshort }}">{{ openclose }} {{ longshort }}</label>
+    <br/><br/>
+    {% block formu %}
+    <div class="condition">
+    <select id="indicator1_1" name="indicator1_1">
+        {% for indicator in indicators_ls %}
+        <option value="{{ indicator }}">{{ indicator }}</option>
+        {% endfor %}
+    </select> 
+    <select id="comparator_1" name="comparator_1">
+        <option value="gt">&gt;</option>
+        <option value="ge">&gt;=</option>
+        <option value="lt">&lt;</option>
+        <option value="le">&lt;=</option>
+        <option value="eq">=</option>
+      </select>
+      <select id="indicator2_1" name="indicator2_1">
+        <option value=""> </option>
+        {% for indicator in indicators_ls %}
+        <option value="{{ indicator }}">{{ indicator }}</option>
+        {% endfor %}
+    </select>
+    <input name="offset_1" id="offset_1" type="number" value="0" placeholder="e.g. 20">
+    <input name="n_conditions" id="n_conditions" type="hidden" value="1">
+    <br/><br/>
+    </div>
+    <button name="add-button" id="add-button" value="add">Add another condition</button>
+    {% endblock %}
+    {% block refine %}{% endblock %}
+    <br/><br/><br/><br/>
+    <button name="submit" type="submit" value="Upload">Submit</button>    
+    
+    <br/><br/>
+</form>
+
+</div>
+<br/><br/><br/>
+{% block content %}
+<div name="messages">
+{% for message in get_flashed_messages() %}
+<div class="flash">{{ message }}</div>
+{% endfor %}
+<br/><br/>
+</div>
+{% endblock %}
+</body>
+<script>
+    var ncond = document.getElementById('n_conditions');
+    let numFields = parseInt(ncond.value)
+    document.getElementById('add-button').addEventListener('click', function() {
+    event.preventDefault(); // Prevent default form submission behavior
+    this.disabled = true;
+    numFields++;
+    // Clone the first form block
+    var formBlock = document.querySelector('.condition');
+    var newFormBlock = formBlock.cloneNode(true);
+    var selectList = document.createElement("select");
+    selectList.name = "andor" + (numFields-1);
+    var option1 = document.createElement("option");
+    option1.value = 'and';
+    option1.text = 'and';
+    selectList.appendChild(option1);
+    var option2 = document.createElement("option");
+    option2.value = 'or';
+    option2.text = 'or';
+    selectList.appendChild(option2);             
+    // Reset the input fields in the new form block
+    var inputs = newFormBlock.querySelectorAll('input');
+    inputs.forEach(function(input) {
+    input.value = '';
+    var oldname = input.name
+    input.name = oldname.slice(0, -1) + numFields.toString(); 
+    });
+    var selects = newFormBlock.querySelectorAll('select');
+    selects.forEach(function(select) {
+    var oldname = select.name
+    select.name = oldname.slice(0, -1) + numFields.toString(); 
+    });
+
+    // Append the new form block to the form
+    var form = document.getElementById('my-form');
+    var addBtn = document.getElementById('add-button');
+    var submitBtn = form.querySelector('button[type="submit"]');
+    form.insertBefore(selectList, addBtn);
+    form.insertBefore(newFormBlock, addBtn);    
+    this.disabled = false;
+    ncond.value = numFields.toString();
+});
+</script>
+</html>
