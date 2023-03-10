@@ -1,0 +1,15 @@
+name: davidenv
+dependencies:
+- python==3.9
+- wheel
+- setuptools
+- pip
+- pip:
+    - backtrader
+    - numpy
+    - yfinance
+    - scikit-learn
+    - pandas
+    - flask
+    - werkzeug
+    - matplotlib
